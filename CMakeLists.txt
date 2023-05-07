@@ -15,6 +15,8 @@ qt_standard_project_setup()
 add_executable(peril
     file.h
     file.cpp
+    game.h
+    game.cpp
     main.cpp
 )
 

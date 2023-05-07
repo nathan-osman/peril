@@ -15,9 +15,9 @@ qt_standard_project_setup()
 add_executable(peril
     file.h
     file.cpp
-    game.h
-    game.cpp
     main.cpp
+    server.h
+    server.cpp
 )
 
 target_link_libraries(peril PRIVATE

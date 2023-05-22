@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/gin-gonic/gin v1.9.0
-	github.com/nathan-osman/go-state v1.0.3
+	github.com/nathan-osman/go-state v1.0.4
 	github.com/rs/zerolog v1.29.1
 	github.com/urfave/cli/v2 v2.25.3
 )

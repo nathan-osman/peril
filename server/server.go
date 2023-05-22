@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -48,6 +49,16 @@ func New(cfg *Config) *Server {
 	for _, r := range []string{roleAdmin, roleHost, roleBoard, roleContestants} {
 		s.tokens[generateRandomString()] = r
 	}
+
+	// TODO: don't use the console for this
+
+	// Print the tokens that were generated
+	fmt.Println("Tokens for connected clients:")
+	fmt.Println()
+	for t, r := range s.tokens {
+		fmt.Printf("%12s %s\n", r, t)
+	}
+	fmt.Println()
 
 	// SSE method
 	r.GET("/sse/:token", s.sse)

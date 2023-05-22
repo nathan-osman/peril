@@ -1,5 +1,9 @@
 github.com/cpuguy83/go-md2man/v2 v2.0.2 h1:p1EgwI/C7NhT0JmVkwCD2ZBK8j4aeHQX2pMHHBfMQ6w=
 github.com/cpuguy83/go-md2man/v2 v2.0.2/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
+github.com/lampctl/go-sse v1.1.4 h1:tnOnE4JmKxrojaj57OwFEKRegXkHZuQHYcuIPkNApII=
+github.com/lampctl/go-sse v1.1.4/go.mod h1:pQlyamsmAVReZl+3aRITZRqKTAN9FQmIP27cL+LB17M=
+github.com/nathan-osman/go-state v1.0.0 h1:74Xim8PkHmD0cCzCuee5U15zE2W+sR2L9FKWNNEM5l4=
+github.com/nathan-osman/go-state v1.0.0/go.mod h1:wByZ4xoZPvrqtPwZedBJpPG8/eEUR8vFinqAsV1R8h8=
 github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf35Ld67mk=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/urfave/cli/v2 v2.25.3 h1:VJkt6wvEBOoSjPFQvOkv6iWIrsJyCrKGtCtxXWwmGeY=

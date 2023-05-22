@@ -28,6 +28,9 @@ type Server struct {
 // New creates a new Server instance.
 func New(cfg *Config) (*Server, error) {
 
+	// Switch to release mode
+	gin.SetMode(gin.ReleaseMode)
+
 	// Create and initialize the server
 	var (
 		r = gin.New()

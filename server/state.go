@@ -35,5 +35,5 @@ func (s *Server) initState() {
 
 		// Data for players
 		statePlayers: []state.Object{},
-	}, nil)
+	}, []string{roleAdmin, roleHost, roleBoard, roleContestants})
 }

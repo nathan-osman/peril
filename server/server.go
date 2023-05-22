@@ -68,25 +68,14 @@ func New(cfg *Config) *Server {
 
 	// API methods
 	api := r.Group("/api")
+	api.Use(gin.CustomRecovery(panicToJSONError))
 	{
-		// Turn panics into JSON errors
-		api.Use(gin.CustomRecovery(func(c *gin.Context, i interface{}) {
-			var message string
-			switch v := i.(type) {
-			case error:
-				message = v.Error()
-			case string:
-				message = v
-			default:
-				message = "an unknown error has occurred"
-			}
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": message,
-			})
-		}))
-
-		// Methods
-		// TODO
+		// Methods restricted to admins
+		apiAdmin := api.Group("")
+		apiAdmin.Use(s.restrictTo([]string{"admin"}))
+		{
+			apiAdmin.POST("/start", s.apiStart)
+		}
 	}
 
 	// Start the server

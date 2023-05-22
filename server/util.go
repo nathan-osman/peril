@@ -3,7 +3,10 @@ package server
 import (
 	"encoding/hex"
 	"math/rand"
+	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Function based on https://stackoverflow.com/a/46909816/193619
@@ -16,4 +19,19 @@ func generateRandomString() string {
 		panic(err)
 	}
 	return hex.EncodeToString(b)
+}
+
+func panicToJSONError(c *gin.Context, i interface{}) {
+	var message string
+	switch v := i.(type) {
+	case error:
+		message = v.Error()
+	case string:
+		message = v
+	default:
+		message = "an unknown error has occurred"
+	}
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"error": message,
+	})
 }

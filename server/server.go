@@ -50,6 +50,9 @@ func New(cfg *Config) *Server {
 		s.tokens[generateRandomString()] = r
 	}
 
+	// Initialize game state
+	s.initState()
+
 	// TODO: don't use the console for this
 
 	// Print the tokens that were generated

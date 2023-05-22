@@ -25,12 +25,9 @@ func main() {
 		Action: func(c *cli.Context) error {
 
 			// Create and start the server
-			s, err := server.New(&server.Config{
+			s := server.New(&server.Config{
 				Addr: c.String("server-addr"),
 			})
-			if err != nil {
-				return err
-			}
 			defer s.Close()
 
 			// Wait for SIGINT or SIGTERM

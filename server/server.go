@@ -26,7 +26,7 @@ type Server struct {
 }
 
 // New creates a new Server instance.
-func New(cfg *Config) (*Server, error) {
+func New(cfg *Config) *Server {
 
 	// Switch to release mode
 	gin.SetMode(gin.ReleaseMode)
@@ -84,7 +84,7 @@ func New(cfg *Config) (*Server, error) {
 		}
 	}()
 
-	return s, nil
+	return s
 }
 
 // Close shuts down the server.

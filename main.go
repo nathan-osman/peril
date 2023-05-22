@@ -6,16 +6,32 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/nathan-osman/peril/server"
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
 	app := &cli.App{
-		Name:  "lampctl",
-		Usage: "HTTP interface for controlling lights",
+		Name:  "peril",
+		Usage: "game server for Peril",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "server-addr",
+				Value:   ":http",
+				EnvVars: []string{"SERVER_ADDR"},
+				Usage:   "HTTP address to listen on",
+			},
+		},
 		Action: func(c *cli.Context) error {
 
-			//...
+			// Create and start the server
+			s, err := server.New(&server.Config{
+				Addr: c.String("server-addr"),
+			})
+			if err != nil {
+				return err
+			}
+			defer s.Close()
 
 			// Wait for SIGINT or SIGTERM
 			sigChan := make(chan os.Signal, 1)

@@ -12,7 +12,7 @@ var randSrc = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 func generateRandomString() string {
 	b := make([]byte, 16)
-	if _, err := randSrc.Read(b); err == nil {
+	if _, err := randSrc.Read(b); err != nil {
 		panic(err)
 	}
 	return hex.EncodeToString(b)

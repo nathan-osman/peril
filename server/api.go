@@ -34,7 +34,7 @@ type apiLoadGame struct {
 		Clues []struct {
 			Question string `json:"question"`
 			Answer   string `json:"answer"`
-			Used     bool   `json:"used"`
+			Used     bool   `json:"-"`
 		} `json:"clues"`
 	} `json:"rounds"`
 }

@@ -184,7 +184,9 @@ func (s *Server) apiMark(c *gin.Context) {
 			players = append(players, p)
 		}
 		return state.Object{
-			"players": players,
+			stateClue:              nil,
+			stateActivePlayerIndex: -1,
+			statePlayers:           players,
 		}
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})

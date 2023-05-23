@@ -1,0 +1,19 @@
+.splash {
+  align-items: center;
+  background-color: #050d53;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.title {
+  color: #d69f4c;
+  font-size: 144pt;
+  line-height: 1em;
+}
+
+.subtitle {
+  color: white;
+  font-size: 24pt;
+}

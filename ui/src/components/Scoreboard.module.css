@@ -1,0 +1,23 @@
+.scoreboard {
+  background-color: black;
+  color: white;
+  display: grid;
+  grid-auto-flow: column;
+}
+
+.player {
+  background-color: #050d53;
+  border: 16px solid black;
+  padding: 8px 16px;
+}
+
+.name {
+  font-size: 24pt;
+  line-height: 1em;
+}
+
+.score {
+  font-size: 48pt;
+  line-height: 1em;
+  text-align: right;
+}

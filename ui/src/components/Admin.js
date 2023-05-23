@@ -1,16 +1,22 @@
 import { useSelector } from "react-redux"
+import Board from './Board'
+import Dashboard from './Dashboard'
 import Loader from './Loader'
+import styles from './Admin.module.css'
 
 export default function Admin({ }) {
 
   const clues = useSelector(state => state.game.clues)
 
   // If clues aren't available, then show the popup for loading them
-  if (clues !== null || clues.length == 0) {
+  if (typeof clues === 'undefined' || clues.length == 0) {
     return <Loader />
   }
 
   return (
-    <h1>Admin</h1>
+    <div className={styles.admin}>
+      <Board />
+      <Dashboard />
+    </div>
   )
 }

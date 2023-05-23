@@ -3,6 +3,7 @@ import { CommandProvider } from '../lib/command'
 import { EventsProvider } from '../lib/events'
 import Admin from './Admin'
 import Auth from './Auth'
+import Board from './Board'
 
 export default function App({ }) {
 
@@ -19,7 +20,7 @@ export default function App({ }) {
           {
             admin: <Admin />,
             host: <h1>Host</h1>,
-            board: <h1>Board</h1>,
+            board: <Board />,
           }[global.role]
         }
       </CommandProvider>

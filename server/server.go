@@ -86,6 +86,7 @@ func New(cfg *Config) *Server {
 		apiAdmin := api.Group("")
 		apiAdmin.Use(s.restrictTo([]string{"admin"}))
 		{
+			apiAdmin.POST("/load", s.apiStart)
 			apiAdmin.POST("/start", s.apiStart)
 		}
 

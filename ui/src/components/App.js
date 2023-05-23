@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux'
+import { CommandProvider } from '../lib/command'
 import { EventsProvider } from '../lib/events'
 import Admin from './Admin'
 import Auth from './Auth'
@@ -13,13 +14,15 @@ export default function App({ }) {
 
   return (
     <EventsProvider token={global.token}>
-      {
+      <CommandProvider>
         {
-          admin: <Admin />,
-          host: <h1>Host</h1>,
-          board: <h1>Board</h1>,
-        }[global.role]
-      }
+          {
+            admin: <Admin />,
+            host: <h1>Host</h1>,
+            board: <h1>Board</h1>,
+          }[global.role]
+        }
+      </CommandProvider>
     </EventsProvider>
   )
 }

@@ -11,6 +11,7 @@ export default function Auth({ }) {
   const dispatch = useDispatch()
 
   function handleSubmit(e) {
+    e.preventDefault()
     fetch('/api/verify', { headers: { token } })
       .then(r => r.json())
       .then(d => {
@@ -20,7 +21,6 @@ export default function Auth({ }) {
           dispatch(auth({ token, role: d.role }))
         }
       })
-    e.preventDefault()
   }
 
   function handleChange(e) {

@@ -18,6 +18,10 @@
   font-size: 24pt;
 }
 
+.error {
+  color: red;
+}
+
 .form {
   margin: 8px 0;
 }

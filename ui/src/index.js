@@ -1,9 +1,16 @@
 import { createRoot } from 'react-dom/client'
+import { Provider } from 'react-redux'
+import App from './components/App'
+import store from './store'
+import '@fontsource/pridi'
+import './index.css'
 
 const root = createRoot(
   document.getElementById('root')
 )
 
 root.render(
-  <h1>Hello, world!</h1>
+  <Provider store={store}>
+    <App />
+  </Provider>
 )

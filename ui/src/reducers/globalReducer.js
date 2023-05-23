@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   token: null,
-  role: null
+  role: null,
+  init: false,
 }
 
 export const globalSlice = createSlice({
@@ -13,7 +14,7 @@ export const globalSlice = createSlice({
       state.token = action.payload.token
       state.role = action.payload.role
     }
-  }
+  },
 })
 
 export const { auth } = globalSlice.actions

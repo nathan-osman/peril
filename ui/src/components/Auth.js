@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { auth } from '../slices/globalSlice'
+import { auth } from '../reducers/globalReducer'
 import styles from './Auth.module.css'
 import { useDispatch } from 'react-redux'
 

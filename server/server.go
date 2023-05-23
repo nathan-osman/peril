@@ -18,6 +18,13 @@ const (
 	roleContestants = "contestants"
 )
 
+var allRoles = []string{
+	roleAdmin,
+	roleHost,
+	roleBoard,
+	roleContestants,
+}
+
 // Server manages the game state and ensures connected clients stay
 // synchronized by using server-sent events.
 type Server struct {
@@ -75,6 +82,13 @@ func New(cfg *Config) *Server {
 		apiAdmin.Use(s.restrictTo([]string{"admin"}))
 		{
 			apiAdmin.POST("/start", s.apiStart)
+		}
+
+		// Methods not restricted to any roles
+		apiAny := api.Group("")
+		apiAny.Use(s.restrictTo(allRoles))
+		{
+			apiAny.GET("/verify", s.apiVerify)
 		}
 	}
 

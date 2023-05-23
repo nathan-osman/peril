@@ -31,7 +31,7 @@ func panicToJSONError(c *gin.Context, i interface{}) {
 	default:
 		message = "an unknown error has occurred"
 	}
-	c.JSON(http.StatusInternalServerError, gin.H{
+	c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 		"error": message,
 	})
 }

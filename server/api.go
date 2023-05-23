@@ -28,3 +28,7 @@ func (s *Server) apiStart(c *gin.Context) {
 	s.state.Update(state.Object{stateStarted: true}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }
+
+func (s *Server) apiVerify(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{})
+}

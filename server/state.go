@@ -8,6 +8,7 @@ const (
 	stateBoardState        = "board_state"
 	stateCategories        = "categories"
 	stateCategoryIndex     = "category_index"
+	stateClues             = "clues"
 	stateCurrentClue       = "current_clue"
 	stateActivePlayerIndex = "active_player_index"
 	statePlayers           = "players"
@@ -30,6 +31,7 @@ func (s *Server) initState() {
 		stateCategoryIndex: 0,
 
 		// Data for clues
+		stateClues:             [][]state.Object{},
 		stateCurrentClue:       state.Object{},
 		stateActivePlayerIndex: 0,
 

@@ -26,7 +26,8 @@
     margin: 8px 0;
 }
 
-.popupInner input {
+.popupInner input,
+.popupInner textarea {
     background-color: #050d53;
     border: none;
     color: white;

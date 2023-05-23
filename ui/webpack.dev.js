@@ -8,10 +8,11 @@ module.exports = merge(common, {
     historyApiFallback: true,
     proxy: [
       {
-        context: ['/api'],
+        context: ['/api', '/sse'],
         target: 'http://localhost:8000',
         changeOrigin: true
       }
-    ]
+    ],
+    compress: false
   }
 })

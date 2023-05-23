@@ -11,8 +11,10 @@ export const globalSlice = createSlice({
   initialState,
   reducers: {
     auth: (state, action) => {
-      state.token = action.payload.token
-      state.role = action.payload.role
+      return {
+        ...state,
+        ...action.payload,
+      }
     }
   },
 })

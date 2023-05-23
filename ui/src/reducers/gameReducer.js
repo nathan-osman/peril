@@ -1,13 +1,19 @@
-export default function (state = {}, action) {
-  switch (action.type) {
-    case "sync":
+import { createSlice } from '@reduxjs/toolkit'
+import _ from 'lodash'
+
+export const gameSlice = createSlice({
+  name: 'game',
+  initialState: {},
+  reducers: {
+    sync: (_state, action) => {
       return action.payload
-    case "delta":
-      return {
-        ...state,
-        ...action.payload
-      }
-    default:
-      return state
+    },
+    delta: (state, action) => {
+      _.merge(state, action.payload)
+    }
   }
-}
+})
+
+export const { sync, delta } = gameSlice.actions
+
+export default gameSlice.reducer

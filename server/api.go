@@ -131,14 +131,33 @@ func (s *Server) apiSetClue(c *gin.Context) {
 		switch r {
 		case roleAdmin, roleHost:
 			return state.Object{
-				"question": v.Question,
-				"answer":   v.Answer,
+				"clue": state.Object{
+					"question": v.Question,
+					"answer":   v.Answer,
+				},
 			}
 		default:
 			return state.Object{
-				"question": v.Question,
+				"clue": state.Object{
+					"question": v.Question,
+				},
 			}
 		}
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+type apiAnswerParams struct {
+	Index int `json:"index"`
+}
+
+func (s *Server) apiAnswer(c *gin.Context) {
+	v := &apiAnswerParams{}
+	if err := c.ShouldBindJSON(v); err != nil {
+		panic(err)
+	}
+	s.state.Update(state.Object{
+		stateActivePlayerIndex: v.Index,
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }

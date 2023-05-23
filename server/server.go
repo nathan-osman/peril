@@ -84,12 +84,19 @@ func New(cfg *Config) *Server {
 	{
 		// Methods restricted to admins
 		apiAdmin := api.Group("")
-		apiAdmin.Use(s.restrictTo([]string{"admin"}))
+		apiAdmin.Use(s.restrictTo([]string{roleAdmin}))
 		{
 			apiAdmin.POST("/load", s.apiLoad)
 			apiAdmin.POST("/start", s.apiStart)
 			apiAdmin.POST("/addPlayer", s.apiAddPlayer)
 			apiAdmin.POST("/setClue", s.apiSetClue)
+		}
+
+		// Methods restricted to admins and contestants
+		apiAdminContestants := api.Group("")
+		apiAdminContestants.Use(s.restrictTo([]string{roleAdmin, roleContestants}))
+		{
+			apiAdminContestants.POST("/answer", s.apiAnswer)
 		}
 
 		// Methods not restricted to any roles

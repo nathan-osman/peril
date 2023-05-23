@@ -6,8 +6,8 @@ const (
 	stateRound             = "round"
 	stateClues             = "clues"
 	stateClue              = "clue"
-	stateActivePlayerIndex = "active_player_index"
 	statePlayers           = "players"
+	stateActivePlayerIndex = "active_player_index"
 )
 
 func (s *Server) initState() {
@@ -22,9 +22,8 @@ func (s *Server) initState() {
 		stateClues: [][]state.Object{},
 		stateClue:  nil,
 
-		stateActivePlayerIndex: 0,
-
 		// Data for players
-		statePlayers: []state.Object{},
+		statePlayers:           []state.Object{},
+		stateActivePlayerIndex: -1,
 	}, allRoles)
 }

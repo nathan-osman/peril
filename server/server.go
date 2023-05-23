@@ -88,6 +88,8 @@ func New(cfg *Config) *Server {
 		{
 			apiAdmin.POST("/load", s.apiLoad)
 			apiAdmin.POST("/start", s.apiStart)
+			apiAdmin.POST("/addPlayer", s.apiAddPlayer)
+			apiAdmin.POST("/setClue", s.apiSetClue)
 		}
 
 		// Methods not restricted to any roles

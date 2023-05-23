@@ -3,17 +3,13 @@ package server
 import "github.com/nathan-osman/go-state"
 
 const (
-	stateStarted           = "started"
 	stateRound             = "round"
-	stateBoardState        = "board_state"
 	stateCategories        = "categories"
 	stateCategoryIndex     = "category_index"
 	stateClues             = "clues"
-	stateCurrentClue       = "current_clue"
+	stateClueIndex         = "clue_index"
 	stateActivePlayerIndex = "active_player_index"
 	statePlayers           = "players"
-
-	bsSplash = "splash"
 )
 
 func (s *Server) initState() {
@@ -22,17 +18,16 @@ func (s *Server) initState() {
 	s.state.Update(state.Object{
 
 		// Global game state
-		stateStarted: false,
-		stateRound:   0,
+		stateRound: 0,
 
 		// Data for the board
-		stateBoardState:    bsSplash,
 		stateCategories:    []string{},
-		stateCategoryIndex: 0,
+		stateCategoryIndex: -1,
 
 		// Data for clues
-		stateClues:             [][]state.Object{},
-		stateCurrentClue:       state.Object{},
+		stateClues:     [][]state.Object{},
+		stateClueIndex: -1,
+
 		stateActivePlayerIndex: 0,
 
 		// Data for players

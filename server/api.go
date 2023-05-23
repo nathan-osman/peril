@@ -91,7 +91,46 @@ func (s *Server) apiLoad(c *gin.Context) {
 }
 
 func (s *Server) apiStart(c *gin.Context) {
-	s.state.Update(state.Object{stateStarted: true}, nil)
+	s.state.Update(state.Object{stateRound: 1}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+type apiAddPlayerParams struct {
+	Name string `json:"name"`
+}
+
+func (s *Server) apiAddPlayer(c *gin.Context) {
+	v := &apiAddPlayerParams{}
+	if err := c.ShouldBindJSON(v); err != nil {
+		panic(err)
+	}
+	s.state.UpdateFunc(func(o state.Object) state.Object {
+		players := o[statePlayers].([]state.Object)
+		players = append(players, state.Object{
+			"name":  v.Name,
+			"score": 0,
+		})
+		return state.Object{
+			statePlayers: players,
+		}
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+type apiSetClueParams struct {
+	CategoryIndex int `json:"category_index"`
+	ClueIndex     int `json:"clue_index"`
+}
+
+func (s *Server) apiSetClue(c *gin.Context) {
+	v := &apiSetClueParams{}
+	if err := c.ShouldBindJSON(v); err != nil {
+		panic(err)
+	}
+	s.state.Update(state.Object{
+		stateCategoryIndex: v.CategoryIndex,
+		stateClueIndex:     v.ClueIndex,
+	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }
 

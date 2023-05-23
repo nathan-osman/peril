@@ -3,6 +3,7 @@ module github.com/nathan-osman/peril
 go 1.18
 
 require (
+	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.9.0
 	github.com/nathan-osman/go-state v1.0.4
 	github.com/rs/zerolog v1.29.1

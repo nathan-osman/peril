@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/nathan-osman/go-state"
+	"github.com/nathan-osman/peril/ui"
 	"github.com/rs/zerolog/log"
 )
 
@@ -69,6 +71,9 @@ func New(cfg *Config) *Server {
 		fmt.Printf("%12s %s\n", r, t)
 	}
 	fmt.Println()
+
+	// Serve the static files
+	r.Use(static.Serve("/", ui.EmbedFileSystem{FileSystem: http.FS(ui.Content)}))
 
 	// SSE method
 	r.GET("/sse/:token", s.sse)

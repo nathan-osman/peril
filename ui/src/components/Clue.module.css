@@ -1,0 +1,56 @@
+.clue {
+  align-items: center;
+  background-color: #071277;
+  color: white;
+  display: grid;
+  grid-auto-flow: row;
+  font-size: 48pt;
+  height: 100%;
+  justify-content: center;
+}
+
+.question {
+  padding: 0 144px;
+  text-align: center;
+}
+
+.answer {
+  text-align: center;
+}
+
+.answer .text {
+  font-size: 32pt;
+  font-style: italic;
+}
+
+.player {
+  text-align: center;
+}
+
+.buttons {
+  font-size: 32pt;
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 16px;
+  justify-content: center;
+}
+
+.button {
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 24pt;
+  padding: 16px;
+}
+
+.button:hover {
+  opacity: 0.5;
+}
+
+.correct {
+  background-color: green;
+}
+
+.incorrect {
+  background-color: red;
+}

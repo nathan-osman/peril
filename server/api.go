@@ -120,6 +120,7 @@ func (s *Server) apiAddPlayer(c *gin.Context) {
 type apiSetClueParams struct {
 	Question string `json:"question"`
 	Answer   string `json:"answer"`
+	Value    int    `json:"value"`
 }
 
 func (s *Server) apiSetClue(c *gin.Context) {
@@ -134,12 +135,14 @@ func (s *Server) apiSetClue(c *gin.Context) {
 				"clue": state.Object{
 					"question": v.Question,
 					"answer":   v.Answer,
+					"value":    v.Value,
 				},
 			}
 		default:
 			return state.Object{
 				"clue": state.Object{
 					"question": v.Question,
+					"value":    v.Value,
 				},
 			}
 		}
@@ -158,6 +161,31 @@ func (s *Server) apiAnswer(c *gin.Context) {
 	}
 	s.state.Update(state.Object{
 		stateActivePlayerIndex: v.Index,
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+type apiMarkParams struct {
+	ScoreDelta int `json:"score_delta"`
+}
+
+func (s *Server) apiMark(c *gin.Context) {
+	v := &apiMarkParams{}
+	if err := c.ShouldBindJSON(v); err != nil {
+		panic(err)
+	}
+	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
+		players := []state.Object{}
+		for i, p := range o[statePlayers].([]state.Object) {
+			if i == o[stateActivePlayerIndex].(int) {
+				score := p["score"].(int)
+				p["score"] = score + v.ScoreDelta
+			}
+			players = append(players, p)
+		}
+		return state.Object{
+			"players": players,
+		}
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }

@@ -90,6 +90,7 @@ func New(cfg *Config) *Server {
 			apiAdmin.POST("/start", s.apiStart)
 			apiAdmin.POST("/addPlayer", s.apiAddPlayer)
 			apiAdmin.POST("/setClue", s.apiSetClue)
+			apiAdmin.POST("/mark", s.apiMark)
 		}
 
 		// Methods restricted to admins and contestants

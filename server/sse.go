@@ -8,12 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type contextType string
+type sseContextType string
 
-const contextRole contextType = "role"
+const sseContextRole sseContextType = "role"
 
 func (s *Server) roleForClient(r *http.Request) string {
-	return r.Context().Value(contextRole).(string)
+	return r.Context().Value(sseContextRole).(string)
 }
 
 func (s *Server) sse(c *gin.Context) {
@@ -27,6 +27,6 @@ func (s *Server) sse(c *gin.Context) {
 	}
 
 	// Store the role in the request context and continue processing the socket
-	ctx := context.WithValue(c.Request.Context(), contextRole, r)
+	ctx := context.WithValue(c.Request.Context(), sseContextRole, r)
 	s.state.ServeHTTP(c.Writer, c.Request.WithContext(ctx))
 }

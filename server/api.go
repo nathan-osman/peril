@@ -7,6 +7,8 @@ import (
 	"github.com/nathan-osman/go-state"
 )
 
+const contextRole = "role"
+
 func (s *Server) restrictTo(roles []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		t := c.Request.Header.Get("Token")
@@ -16,6 +18,7 @@ func (s *Server) restrictTo(roles []string) gin.HandlerFunc {
 		}
 		for _, r := range roles {
 			if r == role {
+				c.Set(contextRole, role)
 				c.Next()
 				return
 			}
@@ -30,5 +33,7 @@ func (s *Server) apiStart(c *gin.Context) {
 }
 
 func (s *Server) apiVerify(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+	c.JSON(http.StatusOK, gin.H{
+		"role": c.GetString(contextRole),
+	})
 }

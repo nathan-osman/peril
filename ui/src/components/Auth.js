@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { auth } from '../reducers/globalReducer'
-import styles from './Auth.module.css'
 import { useDispatch } from 'react-redux'
+import { auth } from '../reducers/globalReducer'
+import Popup from './Popup'
 
 export default function Auth({ }) {
 
@@ -28,23 +28,20 @@ export default function Auth({ }) {
   }
 
   return (
-    <div className={styles.authOuter}>
-      <div className={styles.authInner}>
-        <div className={styles.title}>Login Code</div>
-        <div>Please enter the login code for joining the game.</div>
-        {error !== null &&
-          <div className={styles.error}>Error: {error}</div>}
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <input
-            type="text"
-            className={styles.input}
-            value={token}
-            onChange={handleChange}
-            autoFocus
-          />
-          <button type="submit" className={styles.button}>Continue</button>
-        </form>
-      </div>
-    </div>
+    <Popup
+      title="Login Code"
+      desc="Please enter the login code for joining the game."
+      error={error}
+    >
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={token}
+          onChange={handleChange}
+          autoFocus
+        />
+        <button type="submit">Continue</button>
+      </form>
+    </Popup>
   )
 }

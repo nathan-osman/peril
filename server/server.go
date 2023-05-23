@@ -80,7 +80,7 @@ func New(cfg *Config) *Server {
 
 	// API methods
 	api := r.Group("/api")
-	api.Use(gin.CustomRecovery(panicToJSONError))
+	api.Use(gin.CustomRecoveryWithWriter(nil, panicToJSONError))
 	{
 		// Methods restricted to admins
 		apiAdmin := api.Group("")

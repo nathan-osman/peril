@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux"
-import Board from './Board'
+import BoardAndScore from './BoardAndScore'
 import Dashboard from './Dashboard'
 import Loader from './Loader'
 import styles from './Admin.module.css'
@@ -15,7 +15,7 @@ export default function Admin({ }) {
 
   return (
     <div className={styles.admin}>
-      <Board />
+      <BoardAndScore />
       <Dashboard />
     </div>
   )

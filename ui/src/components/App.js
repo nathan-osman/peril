@@ -3,7 +3,7 @@ import { CommandProvider } from '../lib/command'
 import { EventsProvider } from '../lib/events'
 import Admin from './Admin'
 import Auth from './Auth'
-import Board from './Board'
+import BoardAndScore from './BoardAndScore'
 
 export default function App({ }) {
 
@@ -23,7 +23,7 @@ export default function App({ }) {
                 return <Admin />
               case 'host':
               case 'board':
-                return <Board />
+                return <BoardAndScore />
             }
           }()
         }

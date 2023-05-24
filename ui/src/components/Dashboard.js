@@ -7,17 +7,30 @@ export default function Dashboard({ }) {
 
   const command = useCommand()
 
-  const { round, players } = useSelector(state => {
-    return {
-      round: state.game.round,
-      players: state.game.players
-    }
-  })
+  const { global, game } = useSelector(s => s)
 
   const [playerName, setPlayerName] = useState('')
 
+  function handleAdvanceClick(e) {
+    e.preventDefault()
+    command.send('/api/advanceRound')
+      .catch(e => alert(e))
+  }
+
   function handleStartClick() {
-    command.send('/api/start')
+    command.send('/api/startRound')
+      .catch(e => alert(e))
+  }
+
+  function handleAdvanceCategoryClick(e) {
+    e.preventDefault()
+    command.send('/api/advanceCategory')
+      .catch(e => alert(e))
+  }
+
+  function handleShowBoard(e) {
+    e.preventDefault()
+    command.send('/api/showBoard')
       .catch(e => alert(e))
   }
 
@@ -25,32 +38,69 @@ export default function Dashboard({ }) {
     setPlayerName(e.target.value)
   }
 
-  function handlePlayerNameClick(e) {
+  function handleAddPlayerSubmit(e) {
+    e.preventDefault()
     command.send('/api/addPlayer', { name: playerName })
       .then(() => setPlayerName(''))
       .catch(e => alert(e))
   }
 
-  let startBtn = <button type="button" onClick={handleStartClick}>Start</button>
+  function handleSetGuessingPlayer(e, i) {
+    e.preventDefault()
+    command.send('/api/setGuessingPlayer', { index: i })
+      .catch((e) => alert(e))
+  }
 
   return (
     <div className={styles.dashboard}>
       <div className={styles.title}>Dashboard</div>
       <div>Use this to control the game.</div>
-      <pre><strong>Round:</strong> {round ? round : 'idle'} {startBtn}</pre>
+      <div className={styles.section}>
+        <div className={styles.title}>Global</div>
+        <div>
+          <strong>Round:</strong> {game.round}{' '}
+          <a href="#" onClick={handleAdvanceClick}>[advance]</a>
+        </div>
+        {game.round_started && !game.categories_shown &&
+          <>
+            <div>
+              <strong>Category:</strong>{' '}
+              {game.category_index + 1}{'/'}
+              {game.clues[game.round - 1].length}{' '}
+              {game.category_index + 1 < game.clues[game.round - 1].length ?
+                <a href="#" onClick={handleAdvanceCategoryClick}>[advance]</a> :
+                <a href="#" onClick={handleShowBoard}>[show board]</a>
+              }
+            </div>
+          </>}
+        <div>
+          {!game.round_started &&
+            <button type="button" onClick={handleStartClick}>Start</button>}
+        </div>
+      </div>
       <div className={styles.section}>
         <div className={styles.title}>Players</div>
         <ul>
-          {players.map((p, i) => (
-            <li key={i}>{p.name}</li>
+          {game.players.map((p, i) => (
+            <li key={i}>
+              {p.name} &nbsp;
+              <a
+                href="#"
+                onClick={(e) => handleSetGuessingPlayer(e, i)}
+              >
+                [guess]
+              </a>
+            </li>
           ))}
         </ul>
-        <input
-          type="text"
-          value={playerName}
-          onChange={handlePlayerNameChange}
-        />
-        <button type="button" onClick={handlePlayerNameClick}>Add</button>
+        <form onSubmit={handleAddPlayerSubmit}>
+          <input
+            type="text"
+            value={playerName}
+            onChange={handlePlayerNameChange}
+          />
+          <button type="submit">Add</button>
+        </form>
       </div>
     </div>
   )

@@ -2,8 +2,6 @@ import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { useCommand } from '../lib/command'
 import Clue from './Clue'
-import Scoreboard from './Scoreboard'
-import Splash from './Splash'
 import styles from './Board.module.css'
 
 const DOLLAR_AMOUNTS = [
@@ -15,29 +13,19 @@ export default function Board({ }) {
 
   const command = useCommand()
 
-  const { role, round, clues, clue } = useSelector(state => {
-    return {
-      role: state.global.role,
-      round: state.game.round,
-      clues: state.game.clues,
-      clue: state.game.clue
-    }
-  })
+  const { global, game } = useSelector(s => s)
 
-  if (!round) {
-    return <Splash />
-  }
-
-  if (clue !== null) {
+  // Show the clue if one is active
+  if (game.category_index !== -1 && game.clue_index !== -1) {
     return <Clue />
   }
 
-  const categories = clues[round - 1]
-  const boardValues = DOLLAR_AMOUNTS[round - 1]
+  const categories = game.clues[game.round - 1]
+  const boardValues = DOLLAR_AMOUNTS[game.round - 1]
 
   function renderClueCell(c, i, j) {
 
-    const isAdmin = role == 'admin'
+    const isAdmin = global.role === 'admin'
 
     // Determine the correct class names to use
     let classNames = (isAdmin && !c.used) ?
@@ -46,9 +34,13 @@ export default function Board({ }) {
 
     // Handle clicks
     function handleClick() {
-      command.send('/api/setClue', {
-        ...clues[round - 1][i].clues[j],
-        value: boardValues[j]
+      let clue = game.clues[game.round - 1][i].clues[j]
+      command.send('/api/selectClue', {
+        category_index: i,
+        clue_index: j,
+        question: clue.question,
+        special: clue.special,
+        clue_value: boardValues[j]
       })
         .catch(e => alert(e))
     }
@@ -61,20 +53,17 @@ export default function Board({ }) {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.board}>
-        {categories.map((c, i) => (
-          <Fragment key={i}>
-            <div className={`${styles.cell} ${styles.category}`}>{c.name.toUpperCase()}</div>
-            {c.clues.map((c, j) => (
-              <Fragment key={j}>
-                {renderClueCell(c, i, j)}
-              </Fragment>
-            ))}
-          </Fragment>
-        ))}
-      </div>
-      <Scoreboard />
+    <div className={styles.board}>
+      {categories.map((c, i) => (
+        <Fragment key={i}>
+          <div className={`${styles.cell} ${styles.category}`}>{c.name.toUpperCase()}</div>
+          {c.clues.map((c, j) => (
+            <Fragment key={j}>
+              {renderClueCell(c, i, j)}
+            </Fragment>
+          ))}
+        </Fragment>
+      ))}
     </div>
   )
 }

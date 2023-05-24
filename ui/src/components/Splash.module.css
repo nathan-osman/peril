@@ -5,11 +5,13 @@
   flex-direction: column;
   justify-content: center;
   height: 100%;
+  padding: 72px;
+  text-align: center;
 }
 
 .title {
   color: #d69f4c;
-  font-size: 144pt;
+  font-size: 108pt;
   line-height: 1em;
 }
 

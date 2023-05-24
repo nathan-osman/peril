@@ -1,18 +1,9 @@
-.container,
-.board {
-  height: 100%;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-}
-
 .board {
   display: grid;
   grid-auto-flow: column;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(6, 1fr);
+  height: 100%;
 }
 
 .cell {

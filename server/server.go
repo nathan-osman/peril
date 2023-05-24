@@ -87,17 +87,28 @@ func New(cfg *Config) *Server {
 		apiAdmin.Use(s.restrictTo([]string{roleAdmin}))
 		{
 			apiAdmin.POST("/load", s.apiLoad)
-			apiAdmin.POST("/start", s.apiStart)
 			apiAdmin.POST("/addPlayer", s.apiAddPlayer)
-			apiAdmin.POST("/setClue", s.apiSetClue)
-			apiAdmin.POST("/mark", s.apiMark)
+		}
+
+		// Methods restricted to admins and host
+		apiAdminHost := api.Group("")
+		apiAdminHost.Use(s.restrictTo([]string{roleAdmin, roleHost}))
+		{
+			apiAdminHost.POST("/advanceRound", s.apiAdvanceRound)
+			apiAdminHost.POST("/startRound", s.apiStartRound)
+			apiAdminHost.POST("/advanceCategory", s.apiAdvanceCategory)
+			apiAdminHost.POST("/showBoard", s.apiShowBoard)
+			apiAdminHost.POST("/selectClue", s.apiSelectClue)
+			apiAdminHost.POST("/setWager", s.apiSetWager)
+			apiAdminHost.POST("/discardClue", s.apiDiscardClue)
+			apiAdminHost.POST("/judgeAnswer", s.apiJudgeAnswer)
 		}
 
 		// Methods restricted to admins and contestants
 		apiAdminContestants := api.Group("")
 		apiAdminContestants.Use(s.restrictTo([]string{roleAdmin, roleContestants}))
 		{
-			apiAdminContestants.POST("/answer", s.apiAnswer)
+			apiAdminContestants.POST("/setGuessingPlayer", s.apiSetGuessingPlayer)
 		}
 
 		// Methods not restricted to any roles

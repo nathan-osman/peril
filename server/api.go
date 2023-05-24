@@ -27,20 +27,47 @@ func (s *Server) restrictTo(roles []string) gin.HandlerFunc {
 	}
 }
 
-type apiLoadGame struct {
-	Rounds [][]struct {
+func (s *Server) getClue(o state.Object) (state.Object, bool) {
+	var (
+		round         = o[stateRound].(int)
+		clues         = o[stateClues].([][]state.Object)
+		categoryIndex = o[stateCategoryIndex].(int)
+		clueIndex     = o[stateClueIndex].(int)
+	)
+	if round > len(clues) {
+		return nil, false
+	}
+	categories := clues[round-1]
+	if categoryIndex >= len(categories) {
+		return nil, false
+	}
+	var (
+		category      = categories[categoryIndex]
+		categoryClues = category["clues"].([]state.Object)
+	)
+	if clueIndex >= len(categoryClues) {
+		return nil, false
+	}
+	return categoryClues[clueIndex], true
+}
+
+type apiLoadParams struct {
+	GameName    string `json:"game_name"`
+	SpecialName string `json:"special_name"`
+	Rounds      [][]struct {
 		Name  string `json:"name"`
 		Desc  string `json:"desc"`
 		Clues []struct {
 			Question string `json:"question"`
 			Answer   string `json:"answer"`
+			Special  bool   `json:"special"`
 			Used     bool   `json:"-"`
 		} `json:"clues"`
 	} `json:"rounds"`
 }
 
 func (s *Server) apiLoad(c *gin.Context) {
-	v := &apiLoadGame{}
+	v := &apiLoadParams{}
 	if err := c.ShouldBindJSON(v); err != nil {
 		panic(err)
 	}
@@ -62,6 +89,7 @@ func (s *Server) apiLoad(c *gin.Context) {
 				cluesPrivate = append(cluesPrivate, state.Object{
 					"question": clue.Question,
 					"answer":   clue.Answer,
+					"special":  clue.Special,
 					"used":     clue.Used,
 				})
 				cluesPublic = append(cluesPublic, state.Object{
@@ -81,17 +109,24 @@ func (s *Server) apiLoad(c *gin.Context) {
 		roundsPrivate = append(roundsPrivate, categoriesPrivate)
 		roundsPublic = append(roundsPublic, categoriesPublic)
 	}
-	s.state.Update(state.Object{
-		"clues": roundsPrivate,
-	}, []string{roleAdmin, roleHost})
-	s.state.Update(state.Object{
-		"clues": roundsPublic,
-	}, []string{roleBoard})
-	c.JSON(http.StatusOK, gin.H{})
-}
-
-func (s *Server) apiStart(c *gin.Context) {
-	s.state.Update(state.Object{stateRound: 1}, nil)
+	var (
+		objPrivate = state.Object{
+			stateClues: roundsPrivate,
+		}
+		objPublic = state.Object{
+			stateClues: roundsPublic,
+		}
+	)
+	if v.GameName != "" {
+		objPrivate[stateGameName] = v.GameName
+		objPublic[stateGameName] = v.GameName
+	}
+	if v.SpecialName != "" {
+		objPrivate[stateSpecialName] = v.SpecialName
+		objPublic[stateSpecialName] = v.SpecialName
+	}
+	s.state.Update(objPrivate, []string{roleAdmin, roleHost})
+	s.state.Update(objPublic, []string{roleBoard})
 	c.JSON(http.StatusOK, gin.H{})
 }
 
@@ -117,77 +152,151 @@ func (s *Server) apiAddPlayer(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
-type apiSetClueParams struct {
-	Question string `json:"question"`
-	Answer   string `json:"answer"`
-	Value    int    `json:"value"`
-}
-
-func (s *Server) apiSetClue(c *gin.Context) {
-	v := &apiSetClueParams{}
-	if err := c.ShouldBindJSON(v); err != nil {
-		panic(err)
-	}
+func (s *Server) apiAdvanceRound(c *gin.Context) {
 	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
-		switch r {
-		case roleAdmin, roleHost:
-			return state.Object{
-				"clue": state.Object{
-					"question": v.Question,
-					"answer":   v.Answer,
-					"value":    v.Value,
-				},
-			}
-		default:
-			return state.Object{
-				"clue": state.Object{
-					"question": v.Question,
-					"value":    v.Value,
-				},
-			}
+		return state.Object{
+			stateRound:           o[stateRound].(int) + 1,
+			stateRoundStarted:    false,
+			stateCategoriesShown: false,
 		}
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }
 
-type apiAnswerParams struct {
-	Index int `json:"index"`
+func (s *Server) apiStartRound(c *gin.Context) {
+	s.state.Update(state.Object{
+		stateRoundStarted:  true,
+		stateCategoryIndex: 0,
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
 }
 
-func (s *Server) apiAnswer(c *gin.Context) {
-	v := &apiAnswerParams{}
+func (s *Server) apiAdvanceCategory(c *gin.Context) {
+	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
+		return state.Object{
+			stateCategoryIndex: o[stateCategoryIndex].(int) + 1,
+		}
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+func (s *Server) apiShowBoard(c *gin.Context) {
+	s.state.Update(state.Object{
+		stateCategoriesShown: true,
+		stateCategoryIndex:   -1,
+		stateClueIndex:       -1,
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+type apiSelectClueParams struct {
+	CategoryIndex int `json:"category_index"`
+	ClueIndex     int `json:"clue_index"`
+	ClueValue     int `json:"clue_value"`
+}
+
+func (s *Server) apiSelectClue(c *gin.Context) {
+	v := &apiSelectClueParams{}
 	if err := c.ShouldBindJSON(v); err != nil {
 		panic(err)
 	}
 	s.state.Update(state.Object{
-		stateActivePlayerIndex: v.Index,
+		stateCategoryIndex:       v.CategoryIndex,
+		stateClueIndex:           v.ClueIndex,
+		stateClueValue:           v.ClueValue,
+		stateSpecialShown:        false,
+		stateGuessingPlayerIndex: -1,
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }
 
-type apiMarkParams struct {
-	ScoreDelta int `json:"score_delta"`
+type apiSetWagerParams struct {
+	Value int `json:"value"`
 }
 
-func (s *Server) apiMark(c *gin.Context) {
-	v := &apiMarkParams{}
+func (s *Server) apiSetWager(c *gin.Context) {
+	v := &apiSetWagerParams{}
+	if err := c.ShouldBindJSON(v); err != nil {
+		panic(err)
+	}
+	s.state.Update(state.Object{
+		stateClueValue: v.Value,
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+func (s *Server) apiDiscardClue(c *gin.Context) {
+	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
+		c, ok := s.getClue(o)
+		if !ok {
+			return state.Object{}
+		}
+		c["used"] = true
+		return state.Object{
+			stateClues:         o[stateClues],
+			stateCategoryIndex: -1,
+			stateClueIndex:     -1,
+		}
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+type apiSetGuessingPlayerParams struct {
+	Index int `json:"index"`
+}
+
+func (s *Server) apiSetGuessingPlayer(c *gin.Context) {
+	v := &apiSetGuessingPlayerParams{}
+	if err := c.ShouldBindJSON(v); err != nil {
+		panic(err)
+	}
+	s.state.Update(state.Object{
+		stateGuessingPlayerIndex: v.Index,
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+type apiJudgeAnswerParams struct {
+	Correct bool `json:"correct"`
+}
+
+func (s *Server) apiJudgeAnswer(c *gin.Context) {
+	v := &apiJudgeAnswerParams{}
 	if err := c.ShouldBindJSON(v); err != nil {
 		panic(err)
 	}
 	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
-		players := []state.Object{}
-		for i, p := range o[statePlayers].([]state.Object) {
-			if i == o[stateActivePlayerIndex].(int) {
-				score := p["score"].(int)
-				p["score"] = score + v.ScoreDelta
+		c, ok := s.getClue(o)
+		if !ok {
+			return state.Object{}
+		}
+		var (
+			guessingPlayerIndex = o[stateGuessingPlayerIndex].(int)
+			players             = o[statePlayers].([]state.Object)
+		)
+		if guessingPlayerIndex >= len(players) {
+			return state.Object{}
+		}
+		var (
+			p        = players[guessingPlayerIndex]
+			scoreAdj = o[stateClueValue].(int)
+			special  = c["special"].(bool)
+			newObj   = state.Object{}
+		)
+		if v.Correct {
+			p["score"] = p["score"].(int) + scoreAdj
+		} else {
+			p["score"] = p["score"].(int) - scoreAdj
+		}
+		if v.Correct || special {
+			c["used"] = true
+			newObj = state.Object{
+				stateClues:         o[stateClues],
+				stateCategoryIndex: -1,
+				stateClueIndex:     -1,
 			}
-			players = append(players, p)
 		}
-		return state.Object{
-			stateClue:              nil,
-			stateActivePlayerIndex: -1,
-			statePlayers:           players,
-		}
+		return newObj
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }

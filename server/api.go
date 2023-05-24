@@ -185,9 +185,11 @@ func (s *Server) apiShowBoard(c *gin.Context) {
 }
 
 type apiSelectClueParams struct {
-	CategoryIndex int `json:"category_index"`
-	ClueIndex     int `json:"clue_index"`
-	ClueValue     int `json:"clue_value"`
+	Question      string `json:"question"`
+	Special       bool   `json:"special"`
+	CategoryIndex int    `json:"category_index"`
+	ClueIndex     int    `json:"clue_index"`
+	ClueValue     int    `json:"clue_value"`
 }
 
 func (s *Server) apiSelectClue(c *gin.Context) {
@@ -198,6 +200,8 @@ func (s *Server) apiSelectClue(c *gin.Context) {
 	s.state.Update(state.Object{
 		stateCategoryIndex:       v.CategoryIndex,
 		stateClueIndex:           v.ClueIndex,
+		stateClueQuestion:        v.Question,
+		stateClueSpecial:         v.Special,
 		stateClueValue:           v.ClueValue,
 		stateSpecialShown:        false,
 		stateGuessingPlayerIndex: -1,
@@ -275,7 +279,7 @@ func (s *Server) apiJudgeAnswer(c *gin.Context) {
 		var (
 			p        = players[guessingPlayerIndex]
 			scoreAdj = o[stateClueValue].(int)
-			special  = c["special"].(bool)
+			special  = o[stateClueSpecial].(bool)
 			newObj   = state.Object{}
 		)
 		if v.Correct {
@@ -291,6 +295,8 @@ func (s *Server) apiJudgeAnswer(c *gin.Context) {
 				stateClueIndex:     -1,
 			}
 		}
+		newObj[statePlayers] = o[statePlayers]
+		newObj[stateGuessingPlayerIndex] = -1
 		return newObj
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})

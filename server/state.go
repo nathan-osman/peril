@@ -12,6 +12,8 @@ const (
 	stateClues               = "clues"
 	stateCategoryIndex       = "category_index"
 	stateClueIndex           = "clue_index"
+	stateClueQuestion        = "clue_question"
+	stateClueSpecial         = "clue_special"
 	stateClueValue           = "clue_value"
 	stateSpecialShown        = "special_shown"
 	stateGuessingPlayerIndex = "guessing_player_index"
@@ -62,6 +64,8 @@ func (s *Server) initState() {
 		stateClues:               [][]state.Object{},
 		stateCategoryIndex:       -1,
 		stateClueIndex:           -1,
+		stateClueQuestion:        "",
+		stateClueSpecial:         false,
 		stateClueValue:           0,
 		stateSpecialShown:        false,
 		stateGuessingPlayerIndex: -1,

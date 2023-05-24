@@ -5,6 +5,7 @@ import "github.com/nathan-osman/go-state"
 const (
 	stateGameName            = "game_name"
 	stateSpecialName         = "special_name"
+	stateRoundNames          = "round_names"
 	stateRound               = "round"
 	stateRoundStarted        = "round_started"
 	stateCategoriesShown     = "categories_shown"
@@ -50,6 +51,7 @@ func (s *Server) initState() {
 		// Global game properties
 		stateGameName:    "Peril",
 		stateSpecialName: "Special",
+		stateRoundNames:  []string{},
 
 		// Global game state
 		stateRound:           0,

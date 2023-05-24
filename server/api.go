@@ -52,8 +52,9 @@ func (s *Server) getClue(o state.Object) (state.Object, bool) {
 }
 
 type apiLoadParams struct {
-	GameName    string `json:"game_name"`
-	SpecialName string `json:"special_name"`
+	GameName    string   `json:"game_name"`
+	SpecialName string   `json:"special_name"`
+	RoundNames  []string `json:"round_names"`
 	Rounds      [][]struct {
 		Name  string `json:"name"`
 		Desc  string `json:"desc"`
@@ -109,24 +110,18 @@ func (s *Server) apiLoad(c *gin.Context) {
 		roundsPrivate = append(roundsPrivate, categoriesPrivate)
 		roundsPublic = append(roundsPublic, categoriesPublic)
 	}
-	var (
-		objPrivate = state.Object{
-			stateClues: roundsPrivate,
-		}
-		objPublic = state.Object{
-			stateClues: roundsPublic,
-		}
-	)
-	if v.GameName != "" {
-		objPrivate[stateGameName] = v.GameName
-		objPublic[stateGameName] = v.GameName
-	}
-	if v.SpecialName != "" {
-		objPrivate[stateSpecialName] = v.SpecialName
-		objPublic[stateSpecialName] = v.SpecialName
-	}
-	s.state.Update(objPrivate, []string{roleAdmin, roleHost})
-	s.state.Update(objPublic, []string{roleBoard})
+	s.state.Update(state.Object{
+		stateGameName:    v.GameName,
+		stateSpecialName: v.SpecialName,
+		stateRoundNames:  v.RoundNames,
+		stateClues:       roundsPrivate,
+	}, []string{roleAdmin, roleHost})
+	s.state.Update(state.Object{
+		stateGameName:    v.GameName,
+		stateSpecialName: v.SpecialName,
+		stateRoundNames:  v.RoundNames,
+		stateClues:       roundsPublic,
+	}, []string{roleBoard})
 	c.JSON(http.StatusOK, gin.H{})
 }
 

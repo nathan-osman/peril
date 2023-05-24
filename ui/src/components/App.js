@@ -17,11 +17,15 @@ export default function App({ }) {
     <EventsProvider token={global.token}>
       <CommandProvider>
         {
-          {
-            admin: <Admin />,
-            host: <h1>Host</h1>,
-            board: <Board />,
-          }[global.role]
+          function () {
+            switch (global.role) {
+              case 'admin':
+                return <Admin />
+              case 'host':
+              case 'board':
+                return <Board />
+            }
+          }()
         }
       </CommandProvider>
     </EventsProvider>

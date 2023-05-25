@@ -58,22 +58,22 @@ export default function Clue({ }) {
       )}
       {canShowAnswer && guessingPlayer === null && (
         <div className={styles.buttons}>
-          {game.guessing_allowed && (
+          {game.guessing_allowed ?
             <button
               type="button"
               onClick={handleTimeUpClick}
               className={`${styles.button} ${styles.discard}`}
             >
               Buzzer
+            </button> :
+            <button
+              type="button"
+              onClick={handleDiscardClick}
+              className={`${styles.button} ${styles.discard}`}
+            >
+              Discard
             </button>
-          )}
-          <button
-            type="button"
-            onClick={handleDiscardClick}
-            className={`${styles.button} ${styles.discard}`}
-          >
-            Discard
-          </button>
+          }
         </div>
       )
       }

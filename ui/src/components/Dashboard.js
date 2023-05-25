@@ -7,7 +7,7 @@ export default function Dashboard({ }) {
 
   const command = useCommand()
 
-  const { global, game } = useSelector(s => s)
+  const { game } = useSelector(s => s)
 
   const [playerName, setPlayerName] = useState('')
 
@@ -18,6 +18,10 @@ export default function Dashboard({ }) {
   }
 
   function handleStartClick() {
+    if (!game.players.length) {
+      alert("Add some players first!")
+      return
+    }
     command.send('/api/startRound')
       .catch(e => alert(e))
   }
@@ -74,7 +78,7 @@ export default function Dashboard({ }) {
             </div>
           </>}
         <div>
-          {!game.round_started &&
+          {game.round > 0 && !game.round_started &&
             <button type="button" onClick={handleStartClick}>Start</button>}
         </div>
       </div>

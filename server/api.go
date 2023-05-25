@@ -197,14 +197,20 @@ func (s *Server) apiSelectClue(c *gin.Context) {
 	if err := c.ShouldBindJSON(v); err != nil {
 		panic(err)
 	}
-	s.state.Update(state.Object{
-		stateCategoryIndex:       v.CategoryIndex,
-		stateClueIndex:           v.ClueIndex,
-		stateClueQuestion:        v.Question,
-		stateClueSpecial:         v.Special,
-		stateClueValue:           v.ClueValue,
-		stateSpecialShown:        false,
-		stateGuessingPlayerIndex: -1,
+	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
+		var guessingPlayerIndex any = -1
+		if v.Special {
+			guessingPlayerIndex = o[stateActivePlayerIndex]
+		}
+		return state.Object{
+			stateCategoryIndex:       v.CategoryIndex,
+			stateClueIndex:           v.ClueIndex,
+			stateClueQuestion:        v.Question,
+			stateClueSpecial:         v.Special,
+			stateClueValue:           v.ClueValue,
+			stateSpecialShown:        false,
+			stateGuessingPlayerIndex: guessingPlayerIndex,
+		}
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }
@@ -219,7 +225,8 @@ func (s *Server) apiSetWager(c *gin.Context) {
 		panic(err)
 	}
 	s.state.Update(state.Object{
-		stateClueValue: v.Value,
+		stateClueValue:    v.Value,
+		stateSpecialShown: true,
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }
@@ -294,6 +301,9 @@ func (s *Server) apiJudgeAnswer(c *gin.Context) {
 				stateCategoryIndex: -1,
 				stateClueIndex:     -1,
 			}
+		}
+		if v.Correct {
+			newObj[stateActivePlayerIndex] = o[stateGuessingPlayerIndex]
 		}
 		newObj[statePlayers] = o[statePlayers]
 		newObj[stateGuessingPlayerIndex] = -1

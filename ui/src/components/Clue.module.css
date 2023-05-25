@@ -47,6 +47,11 @@
   opacity: 0.5;
 }
 
+.discard {
+  background-color: black;
+  color: white;
+}
+
 .correct {
   background-color: green;
 }

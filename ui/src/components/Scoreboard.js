@@ -6,7 +6,7 @@ export default function Scoreboard({ }) {
   const { game } = useSelector(s => s)
 
   function classes(i) {
-    if (i == game.guessing_player_index) {
+    if (i == game.guessing_player_index && !game.clue_special) {
       return `${styles.player} ${styles.active}`
     }
     return styles.player
@@ -22,6 +22,7 @@ export default function Scoreboard({ }) {
               `$${p.score}` :
               <span className={styles.negative}>-${Math.abs(p.score)}</span>
             }
+            {i === game.active_player_index && <div className={styles.indicator} />}
           </div>
         </div>
       ))}

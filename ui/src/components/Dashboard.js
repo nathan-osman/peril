@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useCommand } from '../lib/command'
+import Adjuster from './Adjuster'
 import styles from './Dashboard.module.css'
 
 export default function Dashboard({ }) {
@@ -84,20 +85,22 @@ export default function Dashboard({ }) {
       </div>
       <div className={styles.section}>
         <div className={styles.title}>Players</div>
-        <ul>
-          {game.players.map((p, i) => (
-            <li key={i}>
-              {p.name} &nbsp;
-              <a
-                href="#"
-                onClick={(e) => handleSetGuessingPlayer(e, i)}
-              >
-                [guess]
-              </a>
-            </li>
-          ))}
-        </ul>
+        {game.players.map((p, i) => (
+          <div className={styles.player} key={i}>
+            {p.name} &nbsp;
+            <a
+              href="#"
+              className={styles.guess}
+              onClick={(e) => handleSetGuessingPlayer(e, i)}
+            >
+              [guess]
+            </a>
+            <br />
+            <Adjuster index={i} />
+          </div>
+        ))}
         <form onSubmit={handleAddPlayerSubmit}>
+          <div>Add a new player:</div>
           <input
             type="text"
             value={playerName}

@@ -12,6 +12,11 @@ export default function Scoreboard({ }) {
     return styles.player
   }
 
+  // borrowed from https://stackoverflow.com/a/2901298/193619
+  function thousands(v) {
+    return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  }
+
   return (
     <div className={styles.scoreboard}>
       {game.players.map((p, i) => (
@@ -19,8 +24,8 @@ export default function Scoreboard({ }) {
           <div className={styles.name}>{p.name}</div>
           <div className={styles.score}>
             {p.score >= 0 ?
-              `$${p.score}` :
-              <span className={styles.negative}>-${Math.abs(p.score)}</span>
+              `$${thousands(p.score)}` :
+              <span className={styles.negative}>-${thousands(Math.abs(p.score))}</span>
             }
             {i === game.active_player_index && <div className={styles.indicator} />}
           </div>

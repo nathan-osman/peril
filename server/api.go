@@ -147,6 +147,30 @@ func (s *Server) apiAddPlayer(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
+type apiAdjustScoreParams struct {
+	Index int `json:"index"`
+	Value int `json:"value"`
+}
+
+func (s *Server) apiAdjustScore(c *gin.Context) {
+	v := &apiAdjustScoreParams{}
+	if err := c.ShouldBindJSON(v); err != nil {
+		panic(err)
+	}
+	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
+		players := o[statePlayers].([]state.Object)
+		if v.Index >= len(players) {
+			panic("invalid player index")
+		}
+		p := players[v.Index]
+		p["score"] = p["score"].(int) + v.Value
+		return state.Object{
+			statePlayers: o[statePlayers],
+		}
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
 func (s *Server) apiAdvanceRound(c *gin.Context) {
 	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
 		return state.Object{

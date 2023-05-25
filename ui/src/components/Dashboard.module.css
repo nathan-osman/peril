@@ -9,3 +9,14 @@
 .section {
   margin: 16px 0;
 }
+
+.player {
+  background-color: #f0f0f0;
+  border: 1px solid #808080;
+  margin: 16px 0;
+  padding: 8px;
+}
+
+.guess {
+  float: right;
+}

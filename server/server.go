@@ -88,6 +88,7 @@ func New(cfg *Config) *Server {
 		{
 			apiAdmin.POST("/load", s.apiLoad)
 			apiAdmin.POST("/addPlayer", s.apiAddPlayer)
+			apiAdmin.POST("/adjustScore", s.apiAdjustScore)
 		}
 
 		// Methods restricted to admins and host

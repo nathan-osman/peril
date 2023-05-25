@@ -72,7 +72,10 @@ func New(cfg *Config) *Server {
 	}
 	fmt.Println()
 
-	// Serve the static files
+	// Serve the theme directories
+	r.Use(static.Serve("/themes", static.LocalFile("themes", false)))
+
+	// Serve the static files for the game
 	r.Use(static.Serve("/", ui.EmbedFileSystem{FileSystem: http.FS(ui.Content)}))
 
 	// SSE method
@@ -101,6 +104,7 @@ func New(cfg *Config) *Server {
 			apiAdminHost.POST("/showBoard", s.apiShowBoard)
 			apiAdminHost.POST("/selectClue", s.apiSelectClue)
 			apiAdminHost.POST("/setWager", s.apiSetWager)
+			apiAdminHost.POST("/timeUp", s.apiTimeUp)
 			apiAdminHost.POST("/discardClue", s.apiDiscardClue)
 			apiAdminHost.POST("/judgeAnswer", s.apiJudgeAnswer)
 		}

@@ -3,6 +3,7 @@ package server
 import "github.com/nathan-osman/go-state"
 
 const (
+	stateTheme               = "theme"
 	stateGameName            = "game_name"
 	stateSpecialName         = "special_name"
 	stateRoundNames          = "round_names"
@@ -17,6 +18,7 @@ const (
 	stateClueValue           = "clue_value"
 	stateSpecialShown        = "special_shown"
 	stateGuessingPlayerIndex = "guessing_player_index"
+	stateGuessingAllowed     = "guessing_allowed"
 	statePlayers             = "players"
 	stateActivePlayerIndex   = "active_player_index"
 )
@@ -51,6 +53,7 @@ func (s *Server) initState() {
 	s.state.Update(state.Object{
 
 		// Global game properties
+		stateTheme:       "",
 		stateGameName:    "Peril",
 		stateSpecialName: "Special",
 		stateRoundNames:  []string{},
@@ -69,6 +72,7 @@ func (s *Server) initState() {
 		stateClueValue:           0,
 		stateSpecialShown:        false,
 		stateGuessingPlayerIndex: -1,
+		stateGuessingAllowed:     false,
 
 		// Data for players
 		statePlayers:           []state.Object{},

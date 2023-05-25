@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useCommand } from '../lib/command'
 import Splash from './Splash'
 import styles from './Special.module.css'
+import { useAudio } from '../lib/audio'
 
 export default function Special({ }) {
 
   const { global, game } = useSelector(s => s)
   const command = useCommand()
+  const audio = useAudio()
 
   const [amount, setAmount] = useState('')
 
@@ -31,6 +33,10 @@ export default function Special({ }) {
     command.send('/api/setWager', { value })
       .catch(e => alert(e))
   }
+
+  useEffect(() => {
+    audio.play('special.mp3')
+  }, [])
 
   return (
     <Splash

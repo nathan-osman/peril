@@ -8,7 +8,7 @@ module.exports = merge(common, {
     historyApiFallback: true,
     proxy: [
       {
-        context: ['/api', '/sse'],
+        context: ['/api', '/sse', '/themes'],
         target: 'http://localhost:8000',
         changeOrigin: true
       }

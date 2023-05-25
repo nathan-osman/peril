@@ -4,6 +4,7 @@ import { EventsProvider } from '../lib/events'
 import Admin from './Admin'
 import Auth from './Auth'
 import BoardAndScore from './BoardAndScore'
+import { AudioProvider } from '../lib/audio'
 
 export default function App({ }) {
 
@@ -16,17 +17,19 @@ export default function App({ }) {
   return (
     <EventsProvider token={global.token}>
       <CommandProvider>
-        {
-          function () {
-            switch (global.role) {
-              case 'admin':
-                return <Admin />
-              case 'host':
-              case 'board':
-                return <BoardAndScore />
-            }
-          }()
-        }
+        <AudioProvider>
+          {
+            function () {
+              switch (global.role) {
+                case 'admin':
+                  return <Admin />
+                case 'host':
+                case 'board':
+                  return <BoardAndScore />
+              }
+            }()
+          }
+        </AudioProvider>
       </CommandProvider>
     </EventsProvider>
   )

@@ -82,6 +82,12 @@ export default function Dashboard({ }) {
           {game.round > 0 && !game.round_started &&
             <button type="button" onClick={handleStartClick}>Start</button>}
         </div>
+        <div>
+          <strong>Guessing allowed:</strong>{' '}
+          {game.guessing_allowed ? 'yes' : 'no'}
+        </div>
+        {game.clue_index !== -1 &&
+          <div><strong>Clue value:</strong>{' '}${game.clue_value}</div>}
       </div>
       <div className={styles.section}>
         <div className={styles.title}>Players</div>

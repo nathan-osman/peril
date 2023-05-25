@@ -1,16 +1,20 @@
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { useAudio } from '../lib/audio'
 import { useCommand } from '../lib/command'
 import Special from './Special'
 import styles from './Clue.module.css'
 
 export default function Clue({ }) {
 
+  const audio = useAudio()
   const command = useCommand()
 
   const { global, game } = useSelector(s => s)
 
-  if (game.clue_special && !game.special_shown) {
-    return <Special />
+  function handleTimeUpClick() {
+    command.send('/api/timeUp')
+      .catch(e => alert(e))
   }
 
   function handleDiscardClick() {
@@ -21,6 +25,20 @@ export default function Clue({ }) {
   function handleJudgeClick(correct) {
     command.send('/api/judgeAnswer', { correct })
       .catch(e => alert(e))
+  }
+
+  useEffect(() => {
+    if (!game.clue_special && game.guessing_player_index === -1 && !game.guessing_allowed) {
+      audio.play('buzzer.mp3')
+    }
+  }, [
+    game.clue_special,
+    game.guessing_player_index,
+    game.guessing_allowed
+  ])
+
+  if (game.clue_special && !game.special_shown) {
+    return <Special />
   }
 
   const canShowAnswer = global.role === 'admin' || global.role === 'host'
@@ -39,37 +57,51 @@ export default function Clue({ }) {
         </div>
       )}
       {canShowAnswer && guessingPlayer === null && (
-        <button
-          type="button"
-          onClick={handleDiscardClick}
-          className={`${styles.button} ${styles.discard}`}
-        >
-          Discard
-        </button>
-      )}
-      {canShowAnswer && guessingPlayer !== null && (
-        <>
-          <div className={styles.answerer}>
-            <div className={styles.player}>{guessingPlayer.name}</div>
-            <div className={styles.buttons}>
-              <button
-                type="button"
-                onClick={() => handleJudgeClick(true)}
-                className={`${styles.button} ${styles.correct}`}
-              >
-                Correct
-              </button>
-              <button
-                type="button"
-                onClick={() => handleJudgeClick(false)}
-                className={`${styles.button} ${styles.incorrect}`}
-              >
-                Incorrect
-              </button>
+        <div className={styles.buttons}>
+          {game.guessing_allowed && (
+            <button
+              type="button"
+              onClick={handleTimeUpClick}
+              className={`${styles.button} ${styles.discard}`}
+            >
+              Buzzer
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={handleDiscardClick}
+            className={`${styles.button} ${styles.discard}`}
+          >
+            Discard
+          </button>
+        </div>
+      )
+      }
+      {
+        canShowAnswer && guessingPlayer !== null && (
+          <>
+            <div className={styles.answerer}>
+              <div className={styles.player}>{guessingPlayer.name}</div>
+              <div className={styles.buttons}>
+                <button
+                  type="button"
+                  onClick={() => handleJudgeClick(true)}
+                  className={`${styles.button} ${styles.correct}`}
+                >
+                  Correct
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleJudgeClick(false)}
+                  className={`${styles.button} ${styles.incorrect}`}
+                >
+                  Incorrect
+                </button>
+              </div>
             </div>
-          </div>
-        </>
-      )}
-    </div>
+          </>
+        )
+      }
+    </div >
   )
 }

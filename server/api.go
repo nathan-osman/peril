@@ -52,6 +52,7 @@ func (s *Server) getClue(o state.Object) (state.Object, bool) {
 }
 
 type apiLoadParams struct {
+	Theme       string   `json:"theme"`
 	GameName    string   `json:"game_name"`
 	SpecialName string   `json:"special_name"`
 	RoundNames  []string `json:"round_names"`
@@ -111,17 +112,19 @@ func (s *Server) apiLoad(c *gin.Context) {
 		roundsPublic = append(roundsPublic, categoriesPublic)
 	}
 	s.state.Update(state.Object{
+		stateTheme:       v.Theme,
 		stateGameName:    v.GameName,
 		stateSpecialName: v.SpecialName,
 		stateRoundNames:  v.RoundNames,
 		stateClues:       roundsPrivate,
 	}, []string{roleAdmin, roleHost})
 	s.state.Update(state.Object{
+		stateTheme:       v.Theme,
 		stateGameName:    v.GameName,
 		stateSpecialName: v.SpecialName,
 		stateRoundNames:  v.RoundNames,
 		stateClues:       roundsPublic,
-	}, []string{roleBoard})
+	}, []string{roleBoard, roleContestants})
 	c.JSON(http.StatusOK, gin.H{})
 }
 
@@ -234,6 +237,7 @@ func (s *Server) apiSelectClue(c *gin.Context) {
 			stateClueValue:           v.ClueValue,
 			stateSpecialShown:        false,
 			stateGuessingPlayerIndex: guessingPlayerIndex,
+			stateGuessingAllowed:     !v.Special,
 		}
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
@@ -251,6 +255,13 @@ func (s *Server) apiSetWager(c *gin.Context) {
 	s.state.Update(state.Object{
 		stateClueValue:    v.Value,
 		stateSpecialShown: true,
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+func (s *Server) apiTimeUp(c *gin.Context) {
+	s.state.Update(state.Object{
+		stateGuessingAllowed: false,
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }
@@ -282,6 +293,7 @@ func (s *Server) apiSetGuessingPlayer(c *gin.Context) {
 	}
 	s.state.Update(state.Object{
 		stateGuessingPlayerIndex: v.Index,
+		stateGuessingAllowed:     false,
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }
@@ -324,6 +336,10 @@ func (s *Server) apiJudgeAnswer(c *gin.Context) {
 				stateClues:         o[stateClues],
 				stateCategoryIndex: -1,
 				stateClueIndex:     -1,
+			}
+		} else {
+			newObj = state.Object{
+				stateGuessingAllowed: true,
 			}
 		}
 		if v.Correct {

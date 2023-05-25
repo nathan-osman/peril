@@ -1,0 +1,35 @@
+.wager {
+  color: white;
+  margin-top: 64px;
+}
+
+.desc {
+  font-size: 18pt;
+}
+
+.wager input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid black;
+  color: white;
+  font-size: 24pt;
+  padding: 8px;
+}
+
+.wager input:focus {
+  background-color: rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+.wager button {
+  background-color: black;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 24pt;
+  padding: 8px 16px;
+}
+
+.wager button:hover {
+  background-color: rgba(0, 0, 0, 0.75);
+}

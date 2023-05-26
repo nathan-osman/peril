@@ -15,6 +15,7 @@ export default function BoardAndScore({ }) {
       <Splash
         title={game.game_name}
         desc="Waiting for the game to begin"
+        sound="intro.mp3"
       />
     )
   }

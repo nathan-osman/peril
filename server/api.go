@@ -174,12 +174,20 @@ func (s *Server) apiAdjustScore(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
+func (s *Server) apiTriggerSound(c *gin.Context) {
+	s.state.Update(state.Object{
+		stateSoundTriggered: true,
+	}, nil)
+	c.JSON(http.StatusOK, gin.H{})
+}
+
 func (s *Server) apiAdvanceRound(c *gin.Context) {
 	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
 		return state.Object{
 			stateRound:           o[stateRound].(int) + 1,
 			stateRoundStarted:    false,
 			stateCategoriesShown: false,
+			stateSoundTriggered:  false,
 		}
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
@@ -203,10 +211,20 @@ func (s *Server) apiAdvanceCategory(c *gin.Context) {
 }
 
 func (s *Server) apiShowBoard(c *gin.Context) {
-	s.state.Update(state.Object{
-		stateCategoriesShown: true,
-		stateCategoryIndex:   -1,
-		stateClueIndex:       -1,
+	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
+		round := o[stateRound].(int)
+		if round == 3 {
+			return state.Object{
+				stateCategoriesShown: true,
+				stateCategoryIndex:   0,
+				stateClueIndex:       0,
+			}
+		}
+		return state.Object{
+			stateCategoriesShown: true,
+			stateCategoryIndex:   -1,
+			stateClueIndex:       -1,
+		}
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }

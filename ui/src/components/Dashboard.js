@@ -56,6 +56,11 @@ export default function Dashboard({ }) {
       .catch((e) => alert(e))
   }
 
+  function handleTriggerClick() {
+    command.send('/api/triggerSound')
+      .catch(e => alert(e))
+  }
+
   return (
     <div className={styles.dashboard}>
       <div className={styles.title}>Dashboard</div>
@@ -115,6 +120,10 @@ export default function Dashboard({ }) {
           <button type="submit">Add</button>
         </form>
       </div>
-    </div>
+      <div className={styles.section}>
+        <div className={styles.title}>Misc</div>
+        <button onClick={handleTriggerClick}>Trigger Sound</button>
+      </div>
+    </div >
   )
 }

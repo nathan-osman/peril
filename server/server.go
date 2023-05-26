@@ -98,6 +98,7 @@ func New(cfg *Config) *Server {
 		apiAdminHost := api.Group("")
 		apiAdminHost.Use(s.restrictTo([]string{roleAdmin, roleHost}))
 		{
+			apiAdminHost.POST("/triggerSound", s.apiTriggerSound)
 			apiAdminHost.POST("/advanceRound", s.apiAdvanceRound)
 			apiAdminHost.POST("/startRound", s.apiStartRound)
 			apiAdminHost.POST("/advanceCategory", s.apiAdvanceCategory)

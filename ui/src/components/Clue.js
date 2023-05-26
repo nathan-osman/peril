@@ -37,6 +37,12 @@ export default function Clue({ }) {
     game.guessing_allowed
   ])
 
+  useEffect(() => {
+    if (game.round === 3 && game.sound_triggered) {
+      audio.play('final_clue.mp3')
+    }
+  }, [game.round, game.sound_triggered])
+
   if (game.clue_special && !game.special_shown) {
     return <Special />
   }

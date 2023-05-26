@@ -6,7 +6,7 @@ import styles from './Board.module.css'
 
 const DOLLAR_AMOUNTS = [
   [200, 400, 600, 800, 1000],
-  [400, 800, 1200, 1600, 2000]
+  [400, 800, 1200, 1600, 2000],
 ]
 
 export default function Board({ }) {
@@ -46,7 +46,10 @@ export default function Board({ }) {
     }
 
     return (
-      <div className={classNames} onClick={isAdmin ? handleClick : null}>
+      <div
+        className={classNames}
+        onClick={isAdmin && !c.used ? handleClick : null}
+      >
         {!c.used ? `$${boardValues[j]}` : ''}
       </div>
     )

@@ -10,6 +10,7 @@ const (
 	stateRound               = "round"
 	stateRoundStarted        = "round_started"
 	stateCategoriesShown     = "categories_shown"
+	stateSoundTriggered      = "sound_triggered"
 	stateClues               = "clues"
 	stateCategoryIndex       = "category_index"
 	stateClueIndex           = "clue_index"
@@ -62,6 +63,7 @@ func (s *Server) initState() {
 		stateRound:           0,
 		stateRoundStarted:    false,
 		stateCategoriesShown: false,
+		stateSoundTriggered:  false,
 
 		// Data for clues
 		stateClues:               [][]state.Object{},

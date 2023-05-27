@@ -309,9 +309,14 @@ func (s *Server) apiSetGuessingPlayer(c *gin.Context) {
 	if err := c.ShouldBindJSON(v); err != nil {
 		panic(err)
 	}
-	s.state.Update(state.Object{
-		stateGuessingPlayerIndex: v.Index,
-		stateGuessingAllowed:     false,
+	s.state.UpdateFunc(func(o state.Object, r string) state.Object {
+		if o[stateGuessingAllowed].(bool) == false {
+			return state.Object{}
+		}
+		return state.Object{
+			stateGuessingPlayerIndex: v.Index,
+			stateGuessingAllowed:     false,
+		}
 	}, nil)
 	c.JSON(http.StatusOK, gin.H{})
 }

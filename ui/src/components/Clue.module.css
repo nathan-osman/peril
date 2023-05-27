@@ -12,6 +12,7 @@
 .question {
   padding: 0 144px;
   text-align: center;
+  white-space: pre-line;
 }
 
 .answer {
